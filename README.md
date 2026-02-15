@@ -1,0 +1,1 @@
+Python kurso 2026 m. baigiamasis projektas su Django.
