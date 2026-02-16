@@ -10926,7 +10926,7 @@ header.masthead .bg-circle-4 {
 @media (min-width: 992px) {
   header.masthead {
     padding-top: 8rem !important;
-    padding-bottom: 5rem !important;
+    padding-bottom: 7rem !important;
   }
   header.masthead .masthead-subheading {
     font-size: 2rem !important;

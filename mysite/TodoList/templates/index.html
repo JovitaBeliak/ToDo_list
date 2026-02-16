@@ -5,9 +5,9 @@
 {% block content %}
   <h1 class="mb-5">Užduočių statistika:</h1>
   <ul>
-    <li class="mb-4"><strong>Viso užduočių:</strong> {{ num_tasks }}</li>
-    <li class="mb-4"><strong>Užbaigtų užduočių:</strong> {{ num_tasks_finished }}</li>
-    <li class="mb-4"><strong>Veluojancios uzduotys:</strong> {{ num_tasks_overdue }}</li>
-    <li class="mb-4"><strong>Apsilankymų skaičius:</strong> {{ num_visits }}</li>
+    <li class="mb-4"><strong>Viso užduočių: </strong> {{ num_tasks }}</li>
+    <li class="mb-4"><strong>Vykdomų uzduočių: </strong> {{ num_tasks_vykdoma }}</li>
+    <li class="mb-4"><strong>Užbaigtų užduočių: </strong> {{ num_tasks_finished }}</li>
+    <li class="mb-4"><strong>Apsilankymų skaičius: </strong> {{ num_visits }}</li>
   </ul>
 {% endblock %}

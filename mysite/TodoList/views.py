@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.views import generic
+
 from .models import Task
 
 # Create your views here.
@@ -8,8 +10,19 @@ def index(request):
     context = {
         "num_tasks": Task.objects.count(),
         "num_tasks_finished": Task.objects.filter(status='u').count(),
-        "num_tasks_overdue": Task.objects.filter(status='o').count(),
+        "num_tasks_vykdoma": Task.objects.filter(status='v').count(),
         "num_visits": num_visits,
     }
 
     return render(request, template_name='index.html', context=context)
+
+class TaskListView(generic.ListView):
+    model = Task
+    template_name = 'tasks.html'
+    context_object_name = 'tasks'
+    paginate_by = 3
+
+class TaskDetailView(generic.DetailView):
+    model = Task
+    template_name = 'task.html'
+    context_object_name = 'task'
