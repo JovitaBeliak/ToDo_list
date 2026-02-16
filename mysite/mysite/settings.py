@@ -33,6 +33,8 @@ ALLOWED_HOSTS = ALLOWED_HOSTS
 
 INSTALLED_APPS = [
     'TodoList',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -121,4 +123,21 @@ USE_TZ = False
 
 STATIC_URL = 'static/'
 
+
 AUTH_USER_MODEL = 'TodoList.CustomUser'
+
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mano_pastas@gmail.com'
+# el. pašto adresas iš kurio siųsite
+EMAIL_HOST_PASSWORD = 'VerySecret'
+# slaptažodis
