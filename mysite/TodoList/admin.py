@@ -12,7 +12,7 @@ class TaskAdmin(admin.ModelAdmin):
     inlines = [TaskReviewInLine]
 
 class TaskReviewAdmin(admin.ModelAdmin):
-    list_display = ['reviewer', 'date_created', 'task']
+    list_display = ['task', 'reviewer', 'date_created', 'content']
 
 # Register your models here.
 admin.site.register(Task, TaskAdmin)

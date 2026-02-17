@@ -3,10 +3,30 @@
 {% block title %}Užsakymas{% endblock %}
 
 {% block content %}
-<h4 class="mb-4">{{ task.title }}</h4>
+<h3 class="mb-4">{{ task.title }}</h3>
 <p>Sukurimo data: {{ task.date }}</p>
 <p>Užduoties vykdytojas: {{ task.doer }}</p>
 <p>Įvykdymo terminas: {{ task.due_date }}</p>
 <p>Užduoties statusas: {{ task.get_status_display }}</p>
 <p>Aprašymas: {{ task.description | safe }}</p>
+<br/>
+<h4>Komentarai:</h4>
+{% if user.is_authenticated %}
+<h6>Palikite atsiliepimą</h6>
+<form method="post" class="mb-2">
+    {% csrf_token %}
+    {% load crispy_forms_tags %}
+    {{ form | crispy }}
+    <button type="submit" class="btn btn-primary">Paskelbti</button>
+</form>
+{% endif %}
+{% if task.reviews.all %}
+{% for review in task.reviews.all %}
+<p><strong>{{ review.reviewer }}</strong>, <em>{{ review.date_created }}</em></p>
+<p>{{ review.content }}</p>
+<hr>
+{% endfor %}
+{% else %}
+<p>Komentarų nėra</p>
+{% endif %}
 {% endblock %}

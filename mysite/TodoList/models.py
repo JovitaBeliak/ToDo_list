@@ -39,14 +39,14 @@ class Task(models.Model):
     status = models.CharField(choices=STATUS, default='s')
 
     def is_overdue(self):
-        return self.due_date and timezone.now().date() > self.due_date
+        return self.due_date and timezone.now() > self.due_date
 
     def __str__(self):
-        return f'{self.title}, Vykdytojas: {self.doer}'
+        return f'{self.title}, (Vykdo: {self.doer})'
 
 
 class TaskReview(models.Model):
-    task = models.ForeignKey(to='Task', on_delete=models.SET_NULL, null=True, blank=True)
+    task = models.ForeignKey(to='Task', on_delete=models.SET_NULL, null=True, blank=True, related_name='reviews')
     reviewer = models.ForeignKey(to='TodoList.CustomUser', on_delete=models.SET_NULL, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
