@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Mano profilis{% endblock %}
+
+{% block content %}
+{% if user.photo %}
+<img src="{{ user.photo.url }}" class="rounded-circle">
+{% endif %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md">
+            <p><strong>Vartotojas: </strong>{{ user.username }}</p>
+            <p><strong>Vardas: </strong>{{ user.first_name }}</p>
+            <p><strong>Pavardė: </strong>{{ user.last_name }}</p>
+            <p><strong>El. paštas: </strong>{{ user.email }}</p>
+            <h2 class="mb-4 text-center">Vartotojo profilis</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% load crispy_forms_tags %}
+                {{ form | crispy }}
+                <button type="submit" class="btn btn-primary w-30">Pakeisti</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

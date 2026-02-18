@@ -1,11 +1,11 @@
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, reverse
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import FormMixin
 
-from .forms import CustomUserCreateForm, TaskReviewForm
+from .forms import CustomUserCreateForm, TaskReviewForm, CustomUserChangeForm
 from .models import Task, CustomUser
 
 
@@ -64,3 +64,12 @@ class SignUpView(generic.CreateView):
     form_class = CustomUserCreateForm
     template_name = 'signup.html'
     success_url = reverse_lazy('login')
+
+class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
+    form_class = CustomUserChangeForm
+    template_name = 'profile.html'
+    success_url = reverse_lazy('profile')
+
+    def get_object(self, queryset=None):
+        return self.request.user
+

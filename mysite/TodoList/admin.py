@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+
 from .models import Task, TaskReview, CustomUser
 
 class TaskReviewInLine(admin.TabularInline):
@@ -14,7 +16,12 @@ class TaskAdmin(admin.ModelAdmin):
 class TaskReviewAdmin(admin.ModelAdmin):
     list_display = ['task', 'reviewer', 'date_created', 'content']
 
+class CustomUserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets +(
+    ('Additional Info', {'fields': ('photo',)}),
+    )
+
 # Register your models here.
 admin.site.register(Task, TaskAdmin)
 admin.site.register(TaskReview, TaskReviewAdmin)
-admin.site.register(CustomUser)
+admin.site.register(CustomUser, CustomUserAdmin)

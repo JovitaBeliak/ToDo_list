@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 from .models import CustomUser, TaskReview
 from django import forms
@@ -15,3 +15,7 @@ class CustomUserCreateForm(UserCreationForm):
         model = CustomUser
         fields = ('username', 'password1', 'password2')
 
+class CustomUserChangeForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'email', 'photo']
