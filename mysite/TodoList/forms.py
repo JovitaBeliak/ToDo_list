@@ -20,7 +20,14 @@ class CustomUserChangeForm(forms.ModelForm):
         model = CustomUser
         fields = ['first_name', 'last_name', 'email', 'photo']
 
-class TaskCreateUpdateForm(forms.ModelForm):
+class TaskCreateForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'description', 'doer', 'due_date']
+        widgets = {'due_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'})}
+
+
+class TaskUpdateForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['title', 'description', 'doer', 'due_date', 'status']

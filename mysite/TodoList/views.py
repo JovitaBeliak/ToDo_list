@@ -1,11 +1,10 @@
-from django.contrib.auth.forms import UserCreationForm
+
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, reverse
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import FormMixin
-
-from .forms import CustomUserCreateForm, TaskReviewForm, CustomUserChangeForm, TaskCreateUpdateForm
+from .forms import CustomUserCreateForm, TaskReviewForm, CustomUserChangeForm, TaskCreateForm, TaskUpdateForm
 from .models import Task, CustomUser
 
 
@@ -74,22 +73,18 @@ class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
         return self.request.user
 
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
-    model = Task
+    form_class = TaskCreateForm
     template_name = 'task_form.html'
-    form_class = TaskCreateUpdateForm
+    success_url = reverse_lazy('tasks')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.save()
         return super().form_valid(form)
 
-    def get_success_url(self):
-        return reverse('task', kwargs={"pk": self.object.id})
-
-
 class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Task
-    form_class = TaskCreateUpdateForm
+    form_class = TaskUpdateForm
     template_name = 'task_form.html'
 
     def get_success_url(self):
