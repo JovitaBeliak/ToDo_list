@@ -3,47 +3,99 @@
 {% block title %}Užduotys{% endblock %}
 
 {% block content %}
+
 <a class="btn btn-secondary btn-sm mt-1 mb-3" href="{% url 'task_create' %}">Nauja užduotis</a>
 <h1 class="mb-4">Visos užduotys</h1>
 
+<!-- Filtravimo forma -->
+<form method="get" class="mb-4">
+
+    <!-- Pirmoji eilutė: Vykdytojas ir Statusas -->
+    <div class="row g-2 mb-2">
+        <div class="col-auto">
+            <select name="doer" class="form-select form-select-sm">
+                <option value="">Vykdytojai</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}" {% if request.GET.doer == user.id|stringformat:"s" %}selected{% endif %}>
+                        {{ user.username }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-auto">
+            <select name="status" class="form-select form-select-sm">
+                <option value="">Statusas</option>
+                {% for status_name in status_options %}
+                    <option value="{{ status_name }}" {% if request.GET.status == status_name %}selected{% endif %}>
+                        {{ status_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <!-- Antroji eilutė: Datos ir mygtukas -->
+    <div class="row g-2">
+        <div class="col-auto">
+            <input type="date" name="date_from" value="{{ request.GET.date_from }}" class="form-control form-control-sm" placeholder="Nuo">
+        </div>
+
+        <div class="col-auto">
+            <input type="date" name="date_to" value="{{ request.GET.date_to }}" class="form-control form-control-sm" placeholder="Iki">
+        </div>
+
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary btn-sm h-100">Filtruoti</button>
+        </div>
+    </div>
+
+</form>
+
+<!-- Užduočių sąrašas -->
 {% for task in tasks %}
-<p><a href="{% url 'task' task.pk %}">{{ task }}</a></p>
-<p class="{% if task.is_overdue and task.status != 'u' %}text-danger{% endif %}">Užduoties įvykdymo terminas - {{ task.due_date }}</p>
-<hr>
+<div class="mb-3">
+    <p><a href="{% url 'task' task.pk %}">{{ task }}</a></p>
+    <p class="{% if task.is_overdue and task.status != 'u' %}text-danger{% endif %}">
+        Užduoties įvykdymo terminas - {{ task.due_date }}
+    </p>
+    <hr>
+</div>
+{% empty %}
+<p>Nerasta užduočių pagal nurodytus filtrus.</p>
 {% endfor %}
+
+<!-- Puslapiavimas -->
 {% if is_paginated %}
+{% with request.GET.urlencode as query_params %}
 <ul class="pagination justify-content-center">
     {% if page_obj.has_previous %}
     <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ query_params|safe }}">Previous</a>
     </li>
     {% else %}
-    <li class="page-item disabled">
-        <span class="page-link">Previous</span>
-    </li>
+    <li class="page-item disabled"><span class="page-link">Previous</span></li>
     {% endif %}
 
     {% for num in paginator.page_range %}
-    {% if page_obj.number == num %}
-    <li class="page-item active">
-        <span class="page-link">{{ num }}</span>
-    </li>
-    {% else %}
-    <li class="page-item">
-        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-    </li>
-    {% endif %}
+        {% if page_obj.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% else %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ num }}&{{ query_params|safe }}">{{ num }}</a>
+        </li>
+        {% endif %}
     {% endfor %}
 
     {% if page_obj.has_next %}
     <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ query_params|safe }}">Next</a>
     </li>
     {% else %}
-    <li class="page-item disabled">
-        <span class="page-link">Next</span>
-    </li>
+    <li class="page-item disabled"><span class="page-link">Next</span></li>
     {% endif %}
 </ul>
+{% endwith %}
 {% endif %}
+
 {% endblock %}
