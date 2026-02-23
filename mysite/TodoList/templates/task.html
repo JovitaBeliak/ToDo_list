@@ -3,6 +3,12 @@
 {% block title %}Užsakymas{% endblock %}
 
 {% block content %}
+{% if task.doer == user %}
+<div>
+    <a class="btn btn-warning mb-2" href="{% url 'task_update' task.pk %}">Redaguoti</a>
+    <a class="btn btn-danger mb-2" href="{% url 'task_delete' task.pk %}">Ištrinti</a>
+</div>
+{% endif %}
 <h3 class="mb-4">{{ task.title }}</h3>
 <p>Sukurimo data: {{ task.date }}</p>
 <p>Užduoties vykdytojas: {{ task.doer }}</p>
@@ -22,7 +28,11 @@
 {% endif %}
 {% if task.reviews.all %}
 {% for review in task.reviews.all %}
-<p><strong>{{ review.reviewer }}</strong>, <em>{{ review.date_created }}</em></p>
+<p><strong>
+    {% if review.reviewer.photo %}
+    <img src="{{ review.reviewer.photo.url }}" class="rounded-circle" style="width: 30px">
+    {% endif %}
+    {{ review.reviewer }}</strong>, <em>{{ review.date_created }}</em></p>
 <p>{{ review.content }}</p>
 <hr>
 {% endfor %}

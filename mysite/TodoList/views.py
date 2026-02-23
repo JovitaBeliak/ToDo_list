@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import FormMixin
 
-from .forms import CustomUserCreateForm, TaskReviewForm, CustomUserChangeForm
+from .forms import CustomUserCreateForm, TaskReviewForm, CustomUserChangeForm, TaskCreateUpdateForm
 from .models import Task, CustomUser
 
 
@@ -73,3 +73,36 @@ class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
+class TaskCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Task
+    template_name = 'task_form.html'
+    form_class = TaskCreateUpdateForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('task', kwargs={"pk": self.object.id})
+
+
+class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    model = Task
+    form_class = TaskCreateUpdateForm
+    template_name = 'task_form.html'
+
+    def get_success_url(self):
+        return reverse('task', kwargs={"pk": self.object.id})
+
+    def test_func(self):
+        return self.get_object().doer == self.request.user
+
+class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Task
+    template_name = 'task_delete.html'
+    context_object_name = 'task'
+    success_url = reverse_lazy('mytasks')
+
+    def test_func(self):
+        return self.get_object().doer == self.request.user

@@ -38,6 +38,9 @@ class Task(models.Model):
     )
     status = models.CharField(choices=STATUS, default='s')
 
+    class Meta:
+        ordering = ['-date']
+
     def is_overdue(self):
         return self.due_date and timezone.now() > self.due_date
 

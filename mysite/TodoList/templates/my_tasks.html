@@ -4,10 +4,11 @@
 
 {% block content %}
 <h1>Mano užduotys:</h1>
+
 {% for task in tasks %}
 <p><a href="{% url 'task' task.pk %}">{{ task }}</a></p>
 <p>Užduoties statusas: {{ task.get_status_display }}</p>
-<p class="{% if task.is_overdue %}text-danger{% endif %}">Terminas: {{ task.due_date }}</p>
+<p class="{% if task.is_overdue and task.status != 'u' %}text-danger{% endif %}">Terminas: {{ task.due_date }}</p>
 <hr>
 {% endfor %}
 {% endblock %}

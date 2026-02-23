@@ -3,11 +3,11 @@
 {% block title %}Užduotys{% endblock %}
 
 {% block content %}
-
+<a class="btn btn-secondary btn-sm mt-1 mb-3" href="{% url 'task_create' %}">Nauja užduotis</a>
 <h1 class="mb-4">Visos užduotys</h1>
 {% for task in tasks %}
 <p><a href="{{ task.pk }}">{{ task }}</a></p>
-<p>Užduoties įvykdymo terminas - {{ task.due_date }}</p>
+<p class="{% if task.is_overdue and task.status != 'u' %}text-danger{% endif %}">Užduoties įvykdymo terminas - {{ task.due_date }}</p>
 <hr>
 {% endfor %}
 {% if is_paginated %}
