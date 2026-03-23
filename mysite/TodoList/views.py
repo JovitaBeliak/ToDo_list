@@ -6,7 +6,8 @@ from django.views import generic
 from django.views.generic.edit import FormMixin
 from .forms import CustomUserCreateForm, TaskReviewForm, CustomUserChangeForm, TaskCreateForm, TaskUpdateForm
 from .models import Task, CustomUser
-
+from django.utils.timezone import make_aware
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -26,6 +27,31 @@ class TaskListView(generic.ListView):
     template_name = 'tasks.html'
     context_object_name = 'tasks'
     paginate_by = 3
+
+    def get_queryset(self):
+        queryset = Task.objects.all()
+
+        doer = self.request.GET.get('doer')
+        status = self.request.GET.get('status')
+        date_from = self.request.GET.get('date_from')
+        date_to = self.request.GET.get('date_to')
+
+        if doer:
+            queryset = queryset.filter(doer_id=doer)
+        if status:
+            queryset = queryset.filter(status=status)
+        if date_from:
+            queryset = queryset.filter(date__date__gte=date_from)
+        if date_to:
+            queryset = queryset.filter(date__date__lte=date_to)
+
+        return queryset.order_by('-date')
+
+    # 🔑 Čia pridedam users į kontekstą
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['users'] = CustomUser.objects.all()  # visi vartotojai
+        return context
 
 class TaskDetailView(FormMixin, generic.DetailView):
     model = Task

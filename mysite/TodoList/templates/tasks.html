@@ -5,6 +5,32 @@
 {% block content %}
 <a class="btn btn-secondary btn-sm mt-1 mb-3" href="{% url 'task_create' %}">Nauja užduotis</a>
 <h1 class="mb-4">Visos užduotys</h1>
+<form method="get">
+
+    <select name="doer">
+        <option value="">Visi vykdytojai</option>
+        {% for user in users %}
+            <option value="{{ user.id }}"
+                {% if request.GET.doer == user.id|stringformat:"s" %}selected{% endif %}>
+                {{ user.username }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <select name="status">
+        <option value="">Visi statusai</option>
+        <option value="s" {% if request.GET.status == "s" %}selected{% endif %}>Sukurta</option>
+        <option value="v" {% if request.GET.status == "v" %}selected{% endif %}>Vykdoma</option>
+        <option value="u" {% if request.GET.status == "u" %}selected{% endif %}>Užbaigta</option>
+    </select>
+
+    <input type="date" name="date_from" value="{{ request.GET.date_from }}">
+    <input type="date" name="date_to" value="{{ request.GET.date_to }}">
+
+    <button type="submit">Filtruoti</button>
+
+</form>
+<hr>
 {% for task in tasks %}
 
 <p><a href="{% url 'task' task.pk %}">{{ task }}</a>{% if task.doer.photo %}
@@ -15,9 +41,13 @@
 {% endfor %}
 {% if is_paginated %}
 <ul class="pagination justify-content-center">
+
     {% if page_obj.has_previous %}
     <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        <a class="page-link"
+           href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}">
+           Previous
+        </a>
     </li>
     {% else %}
     <li class="page-item disabled">
@@ -26,26 +56,33 @@
     {% endif %}
 
     {% for num in paginator.page_range %}
-    {% if page_obj.number == num %}
-    <li class="page-item active">
-        <span class="page-link">{{ num }}</span>
-    </li>
-    {% else %}
-    <li class="page-item">
-        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-    </li>
-    {% endif %}
+        {% if page_obj.number == num %}
+        <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+        </li>
+        {% else %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?page={{ num }}&{{ request.GET.urlencode }}">
+               {{ num }}
+            </a>
+        </li>
+        {% endif %}
     {% endfor %}
 
     {% if page_obj.has_next %}
     <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="page-link"
+           href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}">
+           Next
+        </a>
     </li>
     {% else %}
     <li class="page-item disabled">
         <span class="page-link">Next</span>
     </li>
     {% endif %}
+
 </ul>
 {% endif %}
 {% endblock %}
